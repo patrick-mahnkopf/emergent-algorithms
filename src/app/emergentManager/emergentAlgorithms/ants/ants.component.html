@@ -1,0 +1,48 @@
+<div id="bottom-ui-wrapper" class="bottom-ui-wrapper">
+    <div class="sm-visible-block sm:w-auto">
+        <button id="reset-button" class="reset-button" (click)="onResetClicked()">Reset</button>
+    </div>
+    <div id="bottom-ui-slider-wrapper" class="bottom-ui-slider-wrapper">
+        <div class="slider-wrapper">
+            <label class="slider-label" for="decay">Decay</label>
+            <input type="range" min="0" max="100" value="50" class="slider" name="decay" id="decay-slider"
+                (input)="onSliderClicked($event)" />
+        </div>
+        <div class="slider-wrapper">
+            <label class="slider-label" for="diffusion">Diffusion</label>
+            <input type="range" min="0" max="100" value="50" class="slider" name="diffusion" id="diffusion-slider"
+                (input)="onSliderClicked($event)" />
+        </div>
+    </div>
+    <div class="relative">
+        <div id="invisible-reset-button">
+            <button class="reset-button">Reset</button>
+        </div>
+        <div class="fullscreen-toggle sm-visible-block sm:absolute sm:right-0 sm:bottom-0">
+            <a class="icon-link cursor-pointer" (click)="toggleFullscreen()">
+                <svg class="fill-demo-ui" xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
+                    aria-labelledby="ants-fullscreen-toggle-title">
+                    <title id="ants-fullscreen-toggle-title">A button to toggle the full screen mode of this simulation
+                    </title>
+                    <path d="M24 9h-2v-7h-7v-2h9v9zm-9 15v-2h7v-7h2v9h-9zm-15-9h2v7h7v2h-9v-9zm9-15v2h-7v7h-2v-9h9z" />
+                </svg>
+            </a>
+        </div>
+    </div>
+    <div id="bottom-buttons" class="mx-4 mt-8 flex sm:hidden justify-between">
+        <div class="sm-hidden-block">
+            <button id="reset-button" class="reset-button" (click)="onResetClicked()">Reset</button>
+        </div>
+        <div class="fullscreen-toggle my-auto">
+            <a class="icon-link cursor-pointer" (click)="toggleFullscreen()">
+                <svg class="fill-demo-ui" xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
+                    aria-labelledby="ants-fullscreen-toggle-title2">
+                    <title id="ants-fullscreen-toggle-title2">A button to toggle the full screen mode of this simulation
+                    </title>
+                    <path d="M24 9h-2v-7h-7v-2h9v9zm-9 15v-2h7v-7h2v9h-9zm-15-9h2v7h7v2h-9v-9zm9-15v2h-7v7h-2v-9h9z" />
+                </svg>
+            </a>
+        </div>
+    </div>
+    <div id="color-holder" class="hidden bg-demo-ui text-gray-600"></div>
+</div>

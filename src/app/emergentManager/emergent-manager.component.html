@@ -1,0 +1,63 @@
+<app-hero></app-hero>
+
+<div id="emergence-explainer"
+  class="container mt-56 flex justify-between items-center mx-auto px-8 md:px-14 lg:px-24 2xl:px-28 w-full mt-40">
+  <section class="w-full">
+    <h2 class="secondary-title">Emergent algorithms</h2>
+    <p class="section-paragraph">
+      Below you can try some simulations of emergent behavior.
+    </p>
+
+    <h3>What is emergent behavior?</h3>
+    <p>
+      Emergent behavior is the result of many small entities working with a simple ruleset to create something that's
+      larger than the sum of its parts.
+      <br>
+      Each agent in these simulations acts on a very simple ruleset and can not do much on its own.
+      When it interacts with the other agents however, new properties and behaviors emerge which were not part of either
+      agent before.
+      This phenomenon is so common that it might even be what combines the building blocks of nature into the
+      very reality we perceive.
+    </p>
+    <br>
+
+    <h3>Where does emergent behavior occur?</h3>
+    <p>We can observe emergence in nonliving physical systems like the ripple patterns forming in sand dunes, water
+      crystals forming into snow flakes, and even in the very fabric of space and time that governs our existence, since
+      the laws of physics themselves likely stem from emergent behavior.
+      <br>
+      This in turn might mean that chemistry is an emergent property of the laws of physics, and biology one of the laws
+      of chemistry.
+      <br>
+      The simulations here will focus on biological and social effects of emergence in the form of swarming behavior as
+      observed in schooling fish, and flocking birds among others, as well as the foraging behavior of ant colonies.
+    </p>
+    <br>
+
+    <h3>Usage tips</h3>
+    <p>Please press the start button below to initiate the simulation.
+      <br>
+      You can switch between the models by pressing one of the buttons that will appear on the left side.
+      <br>
+      You will find some more explanations for the active simulation further down below.
+    </p>
+  </section>
+</div>
+
+<div id="simulation" #pixi class="relative overflow-hidden mt-8">
+  <div id="start-button-wrapper" class="absolute inline top-1/2 left-1/2 text-center"
+    style="transform: translate(-50%, -50%)">
+    <a href="#simulation">
+      <button class="button font-bold p-4 bg-theme border-theme-accent hover:bg-theme-accent" id="start-button"
+        (click)="onStartButtonClicked()">
+        <p>Start</p>
+      </button>
+    </a>
+  </div>
+  <div id="demo-simulation-wrapper" class="hidden">
+    <button #boids class="demo-simulation-button" id="boids-button" (click)="onDemoButtonClicked(boids)">Boids</button>
+    <button #ants class="demo-simulation-button" id="ants-button" (click)="onDemoButtonClicked(ants)">Ants</button>
+  </div>
+
+  <ng-template #demo></ng-template>
+</div>

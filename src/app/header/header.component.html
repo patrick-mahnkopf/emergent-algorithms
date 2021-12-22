@@ -1,0 +1,35 @@
+<!-- Header -->
+<header id="header" class="fixed bg-body xl:static z-50 w-full">
+  <div class="bg-body relative rounded-b shadow-xl py-2 px-6 md:flex justify-between items-center mx-auto w-full">
+    <a id="logo" href="https://patrick-mahnkopf.github.io/" class="text-lg py-4 font-bold link"
+      (click)="toggleNavLinks(true)">Patrick
+      Mahnkopf</a>
+    <div id="nav-links" class="hidden nav-links">
+      <a href="https://patrick-mahnkopf.github.io/" class="nav-link" (click)="toggleNavLinks()">Home</a>
+      <a href="https://patrick-mahnkopf.github.io/#projects" class="nav-link" (click)="toggleNavLinks()">Projects</a>
+      <a href="https://patrick-mahnkopf.github.io/#skills" class="nav-link" (click)="toggleNavLinks()">Skills</a>
+      <a href="https://patrick-mahnkopf.github.io/#about" class="nav-link" (click)="toggleNavLinks()">About</a>
+      <a href="https://patrick-mahnkopf.github.io/#contact" class="md:hidden nav-link"
+        (click)="toggleNavLinks()">Contact</a>
+      <a href="https://patrick-mahnkopf.github.io/#contact" class="hidden md:block" (click)="toggleNavLinks()">
+        <button class="flex button px-2 py-1 bg-theme border-theme-accent">
+          <div>
+            <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+              <path
+                d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.779l5.513-6.812zm9.208-1.264l4.616-3.741v9.348l-4.616-5.607z" />
+            </svg>
+          </div>
+          <span>Contact me</span>
+        </button>
+      </a>
+      <div id="modal" class="modal md:hidden"></div>
+    </div>
+    <div id="hamburger" class="absolute top-0 right-0 p-5 md:hidden" (click)="toggleNavLinks()">
+      <svg width="26" height="18" viewBox="0 0 26 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M13 17.5H0.25V14.6667H13V17.5ZM25.75 10.4167H0.25V7.58333H25.75V10.4167ZM25.75 3.33333H13V0.5H25.75V3.33333Z"
+          fill="white" />
+      </svg>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,89 @@
+/* $ui-color: rgb(85, 143, 232);
+$red-color: rgb(245, 99, 99);
+$orange-color: rgb(209, 130, 28);
+
+.fps-counter-ui-element {
+  position: absolute;
+}
+
+p#fps-counter {
+  color: $orange-color;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.bottom-ui-wrapper {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+}
+
+#bottom-ui-slider-wrapper {
+  display: flex;
+  width: 60vw;
+}
+
+.bottom-ui-element {
+  text-align: center;
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 1em 0;
+  padding: 0.3em 2em;
+  user-select: none;
+
+  button {
+    font-weight: normal;
+    border-radius: 0.5em;
+    display: inline-block;
+    cursor: pointer;
+    line-height: 3em;
+    background: inherit;
+  }
+
+  button#reset-button {
+    border: 1px solid $red-color;
+    color: $red-color;
+  }
+
+  button#trace-button {
+    border: 1px solid $ui-color;
+    color: $ui-color;
+  }
+
+  label {
+    margin: 0 auto;
+    padding: 0;
+    color: $ui-color;
+    justify-content: center;
+  }
+
+  .slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 0.3em;
+    border-radius: 1em;
+    background: $ui-color;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: 0.2s;
+    transition: opacity 0.2s;
+  }
+
+  .slider:hover {
+    opacity: 1;
+  }
+
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    background: $ui-color;
+    cursor: pointer;
+  }
+} */
