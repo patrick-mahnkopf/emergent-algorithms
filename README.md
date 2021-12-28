@@ -1,7 +1,7 @@
 # Emergent Algorithms
 
 This repository contains simulations of emergent behavior.  
-Try the live demo at: https://patrick-mahnkopf.github.io/emergent-algorithms/ or run the project locally using Angular.
+Try the [live demo](https://patrick-mahnkopf.github.io/emergent-algorithms/) or run the project locally using Angular.
 
 ## Emergent Behavior
 
