@@ -26,8 +26,12 @@ The simulations here will focus on biological and social effects of emergence in
 ```
 npm install -g @angular/cli
 ```
+- Clone the repository:
+```
+git clone https://github.com/patrick-mahnkopf/emergent-algorithms.git
+```
 - Run the Application:
 ```
-cd [PROJECT PATH]/emergent-algorithms
-ng serve
+cd emergent-algorithms
+ng serve --open
 ```
