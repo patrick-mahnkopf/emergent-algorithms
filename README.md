@@ -1,10 +1,10 @@
 # Emergent Algorithms
 
-![contributors](https://img.shields.io/github/contributors/patrick-mahnkopf/emergent-algorithms)
-![forks](https://img.shields.io/github/forks/patrick-mahnkopf/emergent-algorithms)
-![stars](https://img.shields.io/github/stars/patrick-mahnkopf/emergent-algorithms)
-![license](https://img.shields.io/github/license/patrick-mahnkopf/emergent-algorithms)
-![issues](https://img.shields.io/github/issues/patrick-mahnkopf/emergent-algorithms)
+[![contributors](https://img.shields.io/github/contributors/patrick-mahnkopf/emergent-algorithms)](https://github.com/patrick-mahnkopf/emergent-algorithms/graphs/contributors)
+[![forks](https://img.shields.io/github/forks/patrick-mahnkopf/emergent-algorithms)](https://github.com/patrick-mahnkopf/emergent-algorithms/network/members)
+[![stars](https://img.shields.io/github/stars/patrick-mahnkopf/emergent-algorithms)](https://github.com/patrick-mahnkopf/emergent-algorithms/stargazers)
+[![license](https://img.shields.io/github/license/patrick-mahnkopf/emergent-algorithms)](./LICENSE)
+[![issues](https://img.shields.io/github/issues/patrick-mahnkopf/emergent-algorithms)](https://github.com/patrick-mahnkopf/emergent-algorithms/issues)
 
 This repository contains interactive simulations of emergent behavior running directly in the browser, rendered using PixiJS.  
 Try the [live demo](https://patrick-mahnkopf.github.io/emergent-algorithms/) or run the project locally using Angular.
