@@ -1,6 +1,6 @@
 # Emergent Algorithms
 
-This repository contains simulations of emergent behavior.  
+This repository contains interactive simulations of emergent behavior running directly in the browser, rendered using PixiJS.  
 Try the [live demo](https://patrick-mahnkopf.github.io/emergent-algorithms/) or run the project locally using Angular.
 
 ## Emergent Behavior
