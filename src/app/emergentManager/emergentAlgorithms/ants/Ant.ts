@@ -2,7 +2,7 @@ import { DEG_TO_RAD } from 'pixi.js';
 import { Utilities } from 'src/app/Utilities';
 import { SpriteObject } from '../SpriteObject';
 import { Vector2D } from '../Vector2D';
-import { Cell } from './Grid';
+import { Cell, PheromoneType } from './Grid';
 import { WorldManagerService } from './world-manager.service';
 
 export class Ant extends SpriteObject {
@@ -14,9 +14,7 @@ export class Ant extends SpriteObject {
   private timeSincePheromoneDrop = 0;
   private readonly dropPheromoneDelay = 125;
 
-  private readonly maxPheromone = 10000;
-  private readonly pheromoneConsumption = 0.02;
-  private pheromoneReserve = this.maxPheromone;
+  private maxSpeed = 1;
 
   creationTime!: DOMHighResTimeStamp;
 
@@ -70,88 +68,6 @@ export class Ant extends SpriteObject {
     this.velocity = new Vector2D(x, y);
   }
 
-  dropPheromones(deltaTime: number): void {
-    if (!this.hasFood && this.worldManager.isOnFood(this.getPosition())) {
-      this.hasFood = true;
-      this.pheromoneReserve = this.maxPheromone;
-    }
-    if (this.hasFood && this.worldManager.isOnNest(this.getPosition())) {
-      this.hasFood = false;
-      this.pheromoneReserve = this.maxPheromone;
-    }
-
-    this.timeSincePheromoneDrop += deltaTime;
-
-    if (this.timeSincePheromoneDrop >= this.dropPheromoneDelay) {
-      this.timeSincePheromoneDrop = 0;
-
-      if (this.hasFood) {
-        this.dropFoodPheromone();
-      } else {
-        this.dropNestPheromone();
-      }
-    }
-  }
-
-  dropFoodPheromone(): void {
-    const gridCell = this.worldManager.grid.getCell(this.getPosition());
-    let amount;
-
-    // Drop the maximum pheromone amount if on a food source
-    if (this.worldManager.isOnFood(this.getPosition()))
-      amount = this.worldManager.grid.pheromoneMax;
-    // Otherwise top up the current cell to 98% of its highest neighbor's amount
-    else {
-      const neighborCells = this.getNeighborCells();
-      let maxPheromone = 0;
-      neighborCells.forEach((cell) => {
-        if (maxPheromone == null || cell.foodPheromone > maxPheromone) {
-          maxPheromone = cell.foodPheromone;
-        }
-      });
-
-      amount = maxPheromone * 0.98 - gridCell.foodPheromone;
-    }
-
-    if (amount > 0) {
-      gridCell.addFoodPheromone(amount);
-    }
-    // gridCell.addFoodPheromone(
-    //   this.pheromoneReserve * this.pheromoneConsumption
-    // );
-    // this.pheromoneReserve *= 1 - this.pheromoneConsumption;
-  }
-
-  dropNestPheromone(): void {
-    const gridCell = this.worldManager.grid.getCell(this.getPosition());
-    let amount;
-
-    // Drop the maximum pheromone amount if on the nest
-    if (this.worldManager.isOnNest(this.getPosition()))
-      amount = this.worldManager.grid.pheromoneMax;
-    // Otherwise top up the current cell to 98% of its highest neighbor's amount
-    else {
-      const neighborCells = this.getNeighborCells();
-      let maxPheromone;
-      neighborCells.forEach((cell) => {
-        if (maxPheromone == null || cell.nestPheromone > maxPheromone) {
-          maxPheromone = cell.nestPheromone;
-        }
-      });
-
-      amount = maxPheromone * 0.98 - gridCell.nestPheromone;
-    }
-
-    if (amount > 0) {
-      gridCell.addNestPheromone(amount);
-    }
-
-    // gridCell.addNestPheromone(
-    //   this.pheromoneReserve * this.pheromoneConsumption
-    // );
-    // this.pheromoneReserve *= 1 - this.pheromoneConsumption;
-  }
-
   move(deltaTime: number): void {
     this.targetPheromones();
     this.update(deltaTime);
@@ -165,77 +81,49 @@ export class Ant extends SpriteObject {
 
   targetPheromones(): void {
     if (this.hasFood) {
-      this.targetNestPheromones();
+      const isOnFood = this.worldManager.isOnFood(this.getPosition());
+      this.updateTargetDirection(isOnFood, PheromoneType.Nest);
     } else {
-      this.targetFoodPheromones();
+      const isOnNest = this.worldManager.isOnNest(this.getPosition());
+      this.updateTargetDirection(isOnNest, PheromoneType.Food);
     }
   }
 
-  getFrontalCells(): Cell[] {
+  updateTargetDirection(
+    isOnSource: boolean,
+    desiredPheromoneType: PheromoneType
+  ): void {
     const curCell = this.worldManager.grid.getCell(this.getPosition());
-    const heading = this.getClosestHeading();
-    const frontalCells: Cell[] = [];
-    const cells: Cell[][] = this.worldManager.grid.cells;
-    const width = this.worldManager.grid.width;
-    const height = this.worldManager.grid.height;
-    const row = curCell.row;
-    const col = curCell.col;
+    let bestCell: Cell = null;
 
-    switch (heading) {
-      case 0:
-        if (row - 1 < 0 || row + 1 >= height || col + 1 >= width) return;
-        frontalCells.push(cells[row - 1][col + 1]);
-        frontalCells.push(cells[row][col + 1]);
-        frontalCells.push(cells[row + 1][col + 1]);
-        break;
-      case 45:
-        if (row - 1 < 0 || col + 1 >= width) return;
-        frontalCells.push(cells[row - 1][col]);
-        frontalCells.push(cells[row - 1][col + 1]);
-        frontalCells.push(cells[row][col + 1]);
-        break;
-      case 90:
-        if (row - 1 < 0 || col - 1 < 0 || col + 1 >= width) return;
-        frontalCells.push(cells[row - 1][col - 1]);
-        frontalCells.push(cells[row - 1][col]);
-        frontalCells.push(cells[row - 1][col + 1]);
-        break;
-      case 135:
-        if (row - 1 < 0 || col - 1 < 0) return;
-        frontalCells.push(cells[row][col - 1]);
-        frontalCells.push(cells[row - 1][col - 1]);
-        frontalCells.push(cells[row - 1][col]);
-        break;
-      case 180:
-        if (row - 1 < 0 || row + 1 >= height || col - 1 < 0) return;
-        frontalCells.push(cells[row + 1][col - 1]);
-        frontalCells.push(cells[row][col - 1]);
-        frontalCells.push(cells[row - 1][col - 1]);
-        break;
-      case 225:
-        if (row + 1 >= height || col - 1 < 0) return;
-        frontalCells.push(cells[row + 1][col]);
-        frontalCells.push(cells[row + 1][col - 1]);
-        frontalCells.push(cells[row][col - 1]);
-        break;
-      case 270:
-        if (row + 1 >= height || col - 1 < 0 || col + 1 >= width) return;
-        frontalCells.push(cells[row + 1][col + 1]);
-        frontalCells.push(cells[row + 1][col]);
-        frontalCells.push(cells[row + 1][col - 1]);
-        break;
-      case 315:
-        if (row + 1 >= height || col + 1 >= width) return;
-        frontalCells.push(cells[row][col + 1]);
-        frontalCells.push(cells[row + 1][col + 1]);
-        frontalCells.push(cells[row + 1][col]);
-        break;
+    if (!isOnSource) {
+      const frontalCells = this.worldManager.grid.getFrontalCells(
+        curCell,
+        this.getClosestHeading()
+      );
 
-      default:
-        break;
+      if (frontalCells != null) {
+        bestCell = this.getCellWithHighestPheromone(
+          frontalCells,
+          desiredPheromoneType
+        );
+      }
     }
 
-    return frontalCells;
+    if (bestCell == null) {
+      const neighborCells = this.worldManager.grid.getNeighborCells(curCell);
+
+      bestCell = this.getCellWithHighestPheromone(
+        neighborCells,
+        desiredPheromoneType
+      );
+    }
+
+    if (bestCell != null && bestCell.getPheromone(desiredPheromoneType) > 0) {
+      this.desiredDirection = bestCell.position.subtractVector2D(
+        this.getPosition()
+      );
+    }
   }
 
   getClosestHeading(): number {
@@ -249,91 +137,20 @@ export class Ant extends SpriteObject {
     return closestHeading;
   }
 
-  getNeighborCells(): Cell[] {
-    const curCell = this.worldManager.grid.getCell(this.getPosition());
-    const width = this.worldManager.grid.width;
-    const height = this.worldManager.grid.height;
-    const neighborCells: Cell[] = [];
+  getCellWithHighestPheromone(cells: Cell[], type: PheromoneType): Cell {
+    let bestCell;
 
-    for (let dRow = -1; dRow <= 1; dRow++) {
-      for (let dCol = -1; dCol <= 1; dCol++) {
-        const row = curCell.row + dRow;
-        const col = curCell.col + dCol;
-        if (
-          row < 0 ||
-          row >= height ||
-          col < 0 ||
-          col >= width ||
-          (dRow == 0 && dCol == 0)
-        )
-          continue;
-        neighborCells.push(this.worldManager.grid.cells[row][col]);
+    cells.forEach((cell) => {
+      if (
+        bestCell == null ||
+        cell.getPheromone(PheromoneType[type]) >
+          bestCell.getPheromone(PheromoneType[type])
+      ) {
+        bestCell = cell;
       }
-    }
+    });
 
-    return neighborCells;
-  }
-
-  targetFoodPheromones(): void {
-    let bestCell: Cell = null;
-
-    if (!this.worldManager.isOnNest(this.getPosition())) {
-      const frontalCells = this.getFrontalCells();
-
-      if (frontalCells != null) {
-        frontalCells.forEach((cell) => {
-          if (bestCell == null || cell.foodPheromone > bestCell.foodPheromone) {
-            bestCell = cell;
-          }
-        });
-      }
-    }
-
-    if (bestCell == null) {
-      const neighborCells = this.getNeighborCells();
-      neighborCells.forEach((cell) => {
-        if (bestCell == null || cell.foodPheromone > bestCell.foodPheromone) {
-          bestCell = cell;
-        }
-      });
-    }
-
-    if (bestCell != null && bestCell.foodPheromone > 0) {
-      this.desiredDirection = bestCell.position.subtractVector2D(
-        this.getPosition()
-      );
-    }
-  }
-
-  targetNestPheromones(): void {
-    let bestCell: Cell = null;
-
-    if (!this.worldManager.isOnFood(this.getPosition())) {
-      const frontalCells = this.getFrontalCells();
-
-      if (frontalCells != null) {
-        frontalCells.forEach((cell) => {
-          if (bestCell == null || cell.nestPheromone > bestCell.nestPheromone) {
-            bestCell = cell;
-          }
-        });
-      }
-    }
-
-    if (bestCell == null) {
-      const neighborCells = this.getNeighborCells();
-      neighborCells.forEach((cell) => {
-        if (bestCell == null || cell.nestPheromone > bestCell.nestPheromone) {
-          bestCell = cell;
-        }
-      });
-    }
-
-    if (bestCell != null && bestCell.nestPheromone > 0) {
-      this.desiredDirection = bestCell.position.subtractVector2D(
-        this.getPosition()
-      );
-    }
+    return bestCell;
   }
 
   override update(deltaTime: number): void {
@@ -383,7 +200,47 @@ export class Ant extends SpriteObject {
     }
   }
 
-  get maxSpeed(): number {
-    return 1;
+  dropPheromones(deltaTime: number): void {
+    // Pick up food
+    if (!this.hasFood && this.worldManager.isOnFood(this.getPosition()))
+      this.hasFood = true;
+
+    // Drop food
+    if (this.hasFood && this.worldManager.isOnNest(this.getPosition()))
+      this.hasFood = false;
+
+    this.timeSincePheromoneDrop += deltaTime;
+
+    if (this.timeSincePheromoneDrop >= this.dropPheromoneDelay) {
+      this.timeSincePheromoneDrop = 0;
+
+      if (this.hasFood) {
+        const isOnFood = this.worldManager.isOnFood(this.getPosition());
+        this.dropPheromone(isOnFood, PheromoneType.Food);
+      } else {
+        const isOnNest = this.worldManager.isOnNest(this.getPosition());
+        this.dropPheromone(isOnNest, PheromoneType.Nest);
+      }
+    }
+  }
+
+  dropPheromone(isOnSource: boolean, pheromoneType: PheromoneType): void {
+    const curCell = this.worldManager.grid.getCell(this.getPosition());
+    let amount = 0;
+
+    if (isOnSource) amount = this.worldManager.grid.pheromoneMax;
+    else {
+      const neighborCells = this.worldManager.grid.getNeighborCells(curCell);
+      let maxPheromone = 0;
+
+      neighborCells.forEach((cell) => {
+        if (cell.getPheromone(pheromoneType) > maxPheromone)
+          maxPheromone = cell.getPheromone(pheromoneType);
+      });
+
+      amount = maxPheromone * 0.98 - curCell.getPheromone(pheromoneType);
+    }
+
+    if (amount > 0) curCell.addPheromone(pheromoneType, amount);
   }
 }

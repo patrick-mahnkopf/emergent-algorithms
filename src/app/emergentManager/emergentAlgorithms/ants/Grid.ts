@@ -20,13 +20,7 @@ export class Grid {
     private demoCanvas: DemoCanvasService,
     private worldManager: WorldManagerService
   ) {
-    for (let row = 0; row < this.height; row++) {
-      this._cells[row] = [];
-      for (let col = 0; col < this.width; col++) {
-        const pos = this.getCellPosition(row, col);
-        this._cells[row][col] = new Cell(row, col, pos);
-      }
-    }
+    this.resetCells();
   }
 
   reset(): void {
@@ -109,15 +103,18 @@ export class Grid {
         )
           continue;
 
-        cell.foodPheromone *= 1 - this.decayRate;
-        cell.nestPheromone *= 1 - this.decayRate;
+        for (const type in PheromoneType) {
+          const newStrength =
+            cell.getPheromone(PheromoneType[type]) * 1 - this.decayRate;
+          cell.setPheromone(PheromoneType[type], newStrength);
+        }
       }
     }
   }
 
   // 70% faster than iterating over all 8 neighbors for each cell
   diffusePheromones(): void {
-    const tempGrid = new Grid(this.demoCanvas, this.worldManager);
+    const newGrid = new Grid(this.demoCanvas, this.worldManager);
 
     for (let row = 0; row < this.height; row++) {
       for (let col = 0; col < this.width; col++) {
@@ -126,82 +123,74 @@ export class Grid {
         const hasRightNeighbor = col + 1 < this.width;
         const hasBotNeighbor = row + 1 < this.height;
 
-        const tempCur = tempGrid._cells[row][col];
+        const newMid = newGrid._cells[row][col];
 
         if (hasRightNeighbor) {
-          const tempRight = tempGrid._cells[row][col + 1];
+          const newRight = newGrid._cells[row][col + 1];
           const right = this._cells[row][col + 1];
           const mid = this._cells[row][col];
           // Update this cell
-          tempCur.addCellPheromones(right);
+          newMid.addCellPheromones(right);
           // Update right neighbor
-          tempRight.addCellPheromones(mid);
+          newRight.addCellPheromones(mid);
 
           if (hasTopNeighbor) {
             const topRight = this._cells[row - 1][col + 1];
             const top = this._cells[row - 1][col];
             // Update this cell
-            tempCur.addCellPheromones(topRight);
+            newMid.addCellPheromones(topRight);
             // Update right neighbor
-            tempRight.addCellPheromones(top);
-            tempRight.addCellPheromones(topRight);
+            newRight.addCellPheromones(top);
+            newRight.addCellPheromones(topRight);
           }
+
           if (hasBotNeighbor) {
             const botRight = this._cells[row + 1][col + 1];
             const bot = this._cells[row + 1][col];
             // Update this cell
-            tempCur.addCellPheromones(botRight);
+            newMid.addCellPheromones(botRight);
             // Update right neighbor
-            tempRight.addCellPheromones(bot);
-            tempRight.addCellPheromones(botRight);
+            newRight.addCellPheromones(bot);
+            newRight.addCellPheromones(botRight);
           }
         }
 
-        if (!hasLeftNeighbor) {
-          if (hasBotNeighbor) {
-            const tempBot = tempGrid._cells[row + 1][col];
-            const bot = this._cells[row + 1][col];
-            const mid = this._cells[row][col];
-            // Update this cell
-            tempCur.addCellPheromones(bot);
+        if (!hasLeftNeighbor && hasBotNeighbor) {
+          const newBot = newGrid._cells[row + 1][col];
+          const bot = this._cells[row + 1][col];
+          const mid = this._cells[row][col];
+          // Update this cell
+          newMid.addCellPheromones(bot);
+          // Update bottom neighbor
+          newBot.addCellPheromones(mid);
+
+          if (hasRightNeighbor) {
+            const right = this._cells[row][col + 1];
+            const botRight = this._cells[row + 1][col + 1];
             // Update bottom neighbor
-            tempBot.addCellPheromones(mid);
-            if (hasRightNeighbor) {
-              const right = this._cells[row][col + 1];
-              const botRight = this._cells[row + 1][col + 1];
-              // Update bottom neighbor
-              tempBot.addCellPheromones(right);
-              tempBot.addCellPheromones(botRight);
-            }
+            newBot.addCellPheromones(right);
+            newBot.addCellPheromones(botRight);
           }
         }
 
-        // const decay = (1 - this.decayRate) * (1 - this.diffusionRate);
         const decay = 1 - this.diffusionRate;
 
-        // let nestStrength = this._cells[row][col].nestPheromone * decay;
-        // nestStrength +=
-        //   (tempGrid._cells[row][col].nestPheromone * this.diffusionRate) / 8;
-
-        let nestStrength = this._cells[row][col].nestPheromone * decay;
-        nestStrength +=
-          (tempGrid._cells[row][col].nestPheromone * this.diffusionRate) / 8;
-        tempGrid._cells[row][col].nestPheromone =
-          nestStrength < 0.05 ? 0 : nestStrength;
-
-        // let foodStrength = this._cells[row][col].foodPheromone * decay;
-        // foodStrength +=
-        //   (tempGrid._cells[row][col].foodPheromone * this.diffusionRate) / 8;
-
-        let foodStrength = this._cells[row][col].foodPheromone * decay;
-        foodStrength +=
-          (tempGrid._cells[row][col].foodPheromone * this.diffusionRate) / 8;
-        tempGrid._cells[row][col].foodPheromone =
-          foodStrength < 0.05 ? 0 : foodStrength;
+        for (const type in PheromoneType) {
+          let strength =
+            this._cells[row][col].getPheromone(PheromoneType[type]) * decay;
+          strength +=
+            (newGrid._cells[row][col].getPheromone(PheromoneType[type]) *
+              this.diffusionRate) /
+            8;
+          newGrid._cells[row][col].setPheromone(
+            PheromoneType[type],
+            strength < 0.05 ? 0 : strength
+          );
+        }
       }
     }
 
-    this.overwriteCells(tempGrid._cells);
+    this.overwriteCells(newGrid._cells);
   }
 
   drawPheromones(): void {
@@ -213,13 +202,13 @@ export class Grid {
           row,
           col,
           0x00ff00,
-          this._cells[row][col].nestPheromone
+          this._cells[row][col].getPheromone(PheromoneType.Nest)
         );
         this.drawPheromone(
           row,
           col,
           0x0000ff,
-          this._cells[row][col].foodPheromone
+          this._cells[row][col].getPheromone(PheromoneType.Food)
         );
       }
     }
@@ -248,10 +237,109 @@ export class Grid {
     );
     this.canvas.endFill();
   }
+
+  getFrontalCells(curCell: Cell, heading: number): Cell[] {
+    const frontalCells: Cell[] = [];
+    const cells: Cell[][] = this.cells;
+    const row = curCell.row;
+    const col = curCell.col;
+
+    switch (heading) {
+      case 0:
+        if (row - 1 < 0 || row + 1 >= this.height || col + 1 >= this.width)
+          return;
+        frontalCells.push(cells[row - 1][col + 1]);
+        frontalCells.push(cells[row][col + 1]);
+        frontalCells.push(cells[row + 1][col + 1]);
+        break;
+      case 45:
+        if (row - 1 < 0 || col + 1 >= this.width) return;
+        frontalCells.push(cells[row - 1][col]);
+        frontalCells.push(cells[row - 1][col + 1]);
+        frontalCells.push(cells[row][col + 1]);
+        break;
+      case 90:
+        if (row - 1 < 0 || col - 1 < 0 || col + 1 >= this.width) return;
+        frontalCells.push(cells[row - 1][col - 1]);
+        frontalCells.push(cells[row - 1][col]);
+        frontalCells.push(cells[row - 1][col + 1]);
+        break;
+      case 135:
+        if (row - 1 < 0 || col - 1 < 0) return;
+        frontalCells.push(cells[row][col - 1]);
+        frontalCells.push(cells[row - 1][col - 1]);
+        frontalCells.push(cells[row - 1][col]);
+        break;
+      case 180:
+        if (row - 1 < 0 || row + 1 >= this.height || col - 1 < 0) return;
+        frontalCells.push(cells[row + 1][col - 1]);
+        frontalCells.push(cells[row][col - 1]);
+        frontalCells.push(cells[row - 1][col - 1]);
+        break;
+      case 225:
+        if (row + 1 >= this.height || col - 1 < 0) return;
+        frontalCells.push(cells[row + 1][col]);
+        frontalCells.push(cells[row + 1][col - 1]);
+        frontalCells.push(cells[row][col - 1]);
+        break;
+      case 270:
+        if (row + 1 >= this.height || col - 1 < 0 || col + 1 >= this.width)
+          return;
+        frontalCells.push(cells[row + 1][col + 1]);
+        frontalCells.push(cells[row + 1][col]);
+        frontalCells.push(cells[row + 1][col - 1]);
+        break;
+      case 315:
+        if (row + 1 >= this.height || col + 1 >= this.width) return;
+        frontalCells.push(cells[row][col + 1]);
+        frontalCells.push(cells[row + 1][col + 1]);
+        frontalCells.push(cells[row + 1][col]);
+        break;
+
+      default:
+        break;
+    }
+
+    return frontalCells;
+  }
+
+  getNeighborCells(curCell: Cell): Cell[] {
+    const neighborCells: Cell[] = [];
+
+    for (let dRow = -1; dRow <= 1; dRow++) {
+      for (let dCol = -1; dCol <= 1; dCol++) {
+        const row = curCell.row + dRow;
+        const col = curCell.col + dCol;
+        if (
+          row < 0 ||
+          row >= this.height ||
+          col < 0 ||
+          col >= this.width ||
+          (dRow == 0 && dCol == 0)
+        )
+          continue;
+        neighborCells.push(this.worldManager.grid.cells[row][col]);
+      }
+    }
+
+    return neighborCells;
+  }
+}
+
+export enum PheromoneType {
+  Food = 'Food',
+  Nest = 'Nest',
 }
 
 export class Cell {
-  private pheromones = [0, 0];
+  // private pheromones = [0, 0];
+  private pheromones: Map<PheromoneType, number> = new Map<
+    PheromoneType,
+    number
+  >([
+    [PheromoneType.Food, 0],
+    [PheromoneType.Nest, 0],
+  ]);
   private _row: number;
   private _col: number;
   private _position: Vector2D;
@@ -274,32 +362,23 @@ export class Cell {
     return this._position;
   }
 
-  get nestPheromone(): number {
-    return this.pheromones[0];
+  getPheromone(type: PheromoneType) {
+    return this.pheromones.get(type);
   }
 
-  set nestPheromone(strength: number) {
-    this.pheromones[0] = strength;
+  setPheromone(type: PheromoneType, strength: number) {
+    this.pheromones.set(type, strength);
   }
 
-  addNestPheromone(strength: number): void {
-    this.pheromones[0] += strength;
-  }
-
-  get foodPheromone(): number {
-    return this.pheromones[1];
-  }
-
-  set foodPheromone(strength: number) {
-    this.pheromones[1] = strength;
-  }
-
-  addFoodPheromone(strength: number): void {
-    this.pheromones[1] += strength;
+  addPheromone(type: PheromoneType, strength: number) {
+    this.pheromones.set(type, this.pheromones.get(type) + strength);
   }
 
   addCellPheromones(otherCell: Cell): void {
-    this.foodPheromone += otherCell.foodPheromone;
-    this.nestPheromone += otherCell.nestPheromone;
+    for (const type in PheromoneType)
+      this.addPheromone(
+        PheromoneType[type],
+        otherCell.getPheromone(PheromoneType[type])
+      );
   }
 }

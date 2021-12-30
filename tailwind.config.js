@@ -1,7 +1,7 @@
-body = "#0E0B16";
-theme = "#4717F6";
-theme_accent = "#5a2df7";
-demo_ui = "#4b89e7";
+const body = "#0E0B16";
+const theme = "#4717F6";
+const theme_accent = "#5a2df7";
+const demo_ui = "#4b89e7";
 
 // prettier-ignore
 module.exports = {
