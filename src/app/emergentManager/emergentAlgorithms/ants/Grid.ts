@@ -130,28 +130,28 @@ export class Grid {
           const right = this._cells[row][col + 1];
           const mid = this._cells[row][col];
           // Update this cell
-          newMid.addCellPheromones(right);
+          newMid.addOtherCellsPheromones(right);
           // Update right neighbor
-          newRight.addCellPheromones(mid);
+          newRight.addOtherCellsPheromones(mid);
 
           if (hasTopNeighbor) {
             const topRight = this._cells[row - 1][col + 1];
             const top = this._cells[row - 1][col];
             // Update this cell
-            newMid.addCellPheromones(topRight);
+            newMid.addOtherCellsPheromones(topRight);
             // Update right neighbor
-            newRight.addCellPheromones(top);
-            newRight.addCellPheromones(topRight);
+            newRight.addOtherCellsPheromones(top);
+            newRight.addOtherCellsPheromones(topRight);
           }
 
           if (hasBotNeighbor) {
             const botRight = this._cells[row + 1][col + 1];
             const bot = this._cells[row + 1][col];
             // Update this cell
-            newMid.addCellPheromones(botRight);
+            newMid.addOtherCellsPheromones(botRight);
             // Update right neighbor
-            newRight.addCellPheromones(bot);
-            newRight.addCellPheromones(botRight);
+            newRight.addOtherCellsPheromones(bot);
+            newRight.addOtherCellsPheromones(botRight);
           }
         }
 
@@ -160,16 +160,16 @@ export class Grid {
           const bot = this._cells[row + 1][col];
           const mid = this._cells[row][col];
           // Update this cell
-          newMid.addCellPheromones(bot);
+          newMid.addOtherCellsPheromones(bot);
           // Update bottom neighbor
-          newBot.addCellPheromones(mid);
+          newBot.addOtherCellsPheromones(mid);
 
           if (hasRightNeighbor) {
             const right = this._cells[row][col + 1];
             const botRight = this._cells[row + 1][col + 1];
             // Update bottom neighbor
-            newBot.addCellPheromones(right);
-            newBot.addCellPheromones(botRight);
+            newBot.addOtherCellsPheromones(right);
+            newBot.addOtherCellsPheromones(botRight);
           }
         }
 
@@ -244,53 +244,64 @@ export class Grid {
     const row = curCell.row;
     const col = curCell.col;
 
+    const hasTop = row - 1 >= 0;
+    const hasBot = row + 1 < this.height;
+    const hasLeft = col - 1 >= 0;
+    const hasRight = col + 1 < this.width;
+
     switch (heading) {
+      // Right
       case 0:
-        if (row - 1 < 0 || row + 1 >= this.height || col + 1 >= this.width)
-          return;
+        if (!hasTop || !hasBot || !hasRight) return;
         frontalCells.push(cells[row - 1][col + 1]);
         frontalCells.push(cells[row][col + 1]);
         frontalCells.push(cells[row + 1][col + 1]);
         break;
+      // Top right
       case 45:
-        if (row - 1 < 0 || col + 1 >= this.width) return;
+        if (!hasTop || !hasRight) return;
         frontalCells.push(cells[row - 1][col]);
         frontalCells.push(cells[row - 1][col + 1]);
         frontalCells.push(cells[row][col + 1]);
         break;
+      // Top
       case 90:
-        if (row - 1 < 0 || col - 1 < 0 || col + 1 >= this.width) return;
+        if (!hasTop || !hasLeft || !hasRight) return;
         frontalCells.push(cells[row - 1][col - 1]);
         frontalCells.push(cells[row - 1][col]);
         frontalCells.push(cells[row - 1][col + 1]);
         break;
+      // Top left
       case 135:
-        if (row - 1 < 0 || col - 1 < 0) return;
+        if (!hasTop || !hasLeft) return;
         frontalCells.push(cells[row][col - 1]);
         frontalCells.push(cells[row - 1][col - 1]);
         frontalCells.push(cells[row - 1][col]);
         break;
+      // Left
       case 180:
-        if (row - 1 < 0 || row + 1 >= this.height || col - 1 < 0) return;
+        if (!hasTop || !hasBot || !hasLeft) return;
         frontalCells.push(cells[row + 1][col - 1]);
         frontalCells.push(cells[row][col - 1]);
         frontalCells.push(cells[row - 1][col - 1]);
         break;
+      // Bottom left
       case 225:
-        if (row + 1 >= this.height || col - 1 < 0) return;
+        if (!hasBot || !hasLeft) return;
         frontalCells.push(cells[row + 1][col]);
         frontalCells.push(cells[row + 1][col - 1]);
         frontalCells.push(cells[row][col - 1]);
         break;
+      // Bottom
       case 270:
-        if (row + 1 >= this.height || col - 1 < 0 || col + 1 >= this.width)
-          return;
+        if (!hasBot || !hasLeft || !hasRight) return;
         frontalCells.push(cells[row + 1][col + 1]);
         frontalCells.push(cells[row + 1][col]);
         frontalCells.push(cells[row + 1][col - 1]);
         break;
+      // Bottom right
       case 315:
-        if (row + 1 >= this.height || col + 1 >= this.width) return;
+        if (!hasBot || !hasRight) return;
         frontalCells.push(cells[row][col + 1]);
         frontalCells.push(cells[row + 1][col + 1]);
         frontalCells.push(cells[row + 1][col]);
@@ -374,7 +385,7 @@ export class Cell {
     this.pheromones.set(type, this.pheromones.get(type) + strength);
   }
 
-  addCellPheromones(otherCell: Cell): void {
+  addOtherCellsPheromones(otherCell: Cell): void {
     for (const type in PheromoneType)
       this.addPheromone(
         PheromoneType[type],

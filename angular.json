@@ -17,7 +17,6 @@
         "build": {
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
-            "outputPath": "dist/angular-portfolio",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -27,6 +26,7 @@
             "styles": ["src/styles.scss"],
             "scripts": ["node_modules/pixi.js/dist/pixi.min.js"],
             "sourceMap": true,
+            "optimization": true,
             "customWebpackConfig": {
               "path": "./webpack.config.js"
             }
@@ -39,6 +39,8 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "outputPath": "docs",
+              "baseHref": "/emergent-algorithms/",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,

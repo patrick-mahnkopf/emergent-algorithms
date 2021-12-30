@@ -1,5 +1,5 @@
 const body = "#0E0B16";
-const theme = "#4717F6";
+const theme_color = "#4717F6";
 const theme_accent = "#5a2df7";
 const demo_ui = "#4b89e7";
 
@@ -21,7 +21,7 @@ module.exports = {
         'body-accent': '#171225',
         'selected-text': '#A3A3FF',
         'accent': '#e6e6e6',
-        'theme': theme,
+        'theme': theme_color,
         'theme-accent': theme_accent,
         'demo-ui': demo_ui,
         'nav': '#404053',
@@ -57,7 +57,7 @@ module.exports = {
         'emergent-pattern': "url('/assets/emergent_demos/hero/background.webp')"
       },
       outline: {
-        'theme': ['2px solid ' + theme, '-2px'],
+        'theme': ['2px solid ' + theme_color, '-2px'],
         'body': ['2px solid ' + body, '-2px'],
         'theme-accent': ['2px solid ' + theme_accent, '-2px']
       },

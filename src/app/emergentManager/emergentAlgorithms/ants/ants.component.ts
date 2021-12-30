@@ -3,6 +3,7 @@ import { DemoCanvasService } from '../../demo-canvas.service';
 import { DemoComponent } from '../DemoComponent';
 import { Vector2D } from '../Vector2D';
 import { AntManagerService } from './ant-manager.service';
+import { PheromoneType } from './Grid';
 import { WorldManagerService } from './world-manager.service';
 
 const loader = PIXI.Loader.shared;
@@ -57,6 +58,6 @@ export class AntsComponent implements DemoComponent {
   onTouch(event: PointerEvent): void {
     const grid = this.worldManager.grid;
     const cell = grid.getCell(new Vector2D(event.offsetX, event.offsetY));
-    cell.foodPheromone = grid.pheromoneMax;
+    cell.setPheromone(PheromoneType.Food, grid.pheromoneMax);
   }
 }
