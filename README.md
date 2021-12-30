@@ -5,7 +5,7 @@
 [![stars](https://img.shields.io/github/stars/patrick-mahnkopf/emergent-algorithms)](https://github.com/patrick-mahnkopf/emergent-algorithms/stargazers)
 [![license](https://img.shields.io/github/license/patrick-mahnkopf/emergent-algorithms)](./LICENSE)
 [![issues](https://img.shields.io/github/issues/patrick-mahnkopf/emergent-algorithms)](https://github.com/patrick-mahnkopf/emergent-algorithms/issues)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=patrick-mahnkopf_Anki_More_Overview_Stats&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=patrick-mahnkopf_Anki_More_Overview_Stats)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=patrick-mahnkopf_Anki_More_Overview_Stats&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=patrick-mahnkopf_emergent-algorithms)
 
 This repository contains interactive simulations of emergent behavior running directly in the browser, rendered using PixiJS.  
 Try the [live demo](https://patrick-mahnkopf.github.io/emergent-algorithms/) or run the project locally using Angular.
