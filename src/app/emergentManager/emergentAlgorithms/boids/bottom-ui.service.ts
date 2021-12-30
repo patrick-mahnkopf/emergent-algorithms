@@ -30,9 +30,7 @@ export class BottomUiService {
     const sliderWrapper = document.getElementById('bottom-ui-slider-wrapper');
     const sliders = sliderWrapper.getElementsByClassName('slider');
 
-    for (let i = 0; i < sliders.length; i++) {
-      const slider = sliders[i] as HTMLInputElement;
-
+    for (const slider of sliders as HTMLCollectionOf<HTMLInputElement>) {
       if (!this.UISliders.has(slider.id)) {
         this.UISliders.set(slider.id, slider);
       }

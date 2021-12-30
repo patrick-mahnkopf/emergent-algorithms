@@ -94,8 +94,8 @@ export class DemoCanvasService {
       const fullscreenToggles = document.getElementsByClassName(
         'fullscreen-toggle'
       ) as HTMLCollectionOf<HTMLDivElement>;
-      for (let i = 0; i < fullscreenToggles.length; i++) {
-        const toggle = fullscreenToggles[i];
+
+      for (const toggle of fullscreenToggles) {
         toggle.style.display = 'none';
       }
 

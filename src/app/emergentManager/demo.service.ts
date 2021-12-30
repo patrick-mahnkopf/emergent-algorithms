@@ -125,8 +125,8 @@ export class DemoService {
     const sliders = document.getElementsByClassName(
       'slider'
     ) as HTMLCollectionOf<HTMLInputElement>;
-    for (let i = 0; i < sliders.length; i++) {
-      const slider = sliders[i];
+
+    for (const slider of sliders) {
       slider.style.background =
         'linear-gradient(to right, ' +
         progressColor +

@@ -55,7 +55,6 @@ export class BoidsComponent implements DemoComponent {
   }
 
   onResetClicked(): void {
-    // this.bottomUiService.reset();
     this.resetBirds();
   }
 

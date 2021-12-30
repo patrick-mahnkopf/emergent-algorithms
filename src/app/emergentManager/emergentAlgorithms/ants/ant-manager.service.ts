@@ -10,10 +10,6 @@ import { WorldManagerService } from './world-manager.service';
 export class AntManagerService {
   private readonly ANT_COUNT: number = 100;
   private ants: Ant[] = [];
-  private activeAnts: Ant[] = [];
-
-  private antLifetime = 5000;
-  private simulationSteps = 0;
 
   private previousTimeStamp: DOMHighResTimeStamp;
 
@@ -27,7 +23,6 @@ export class AntManagerService {
     const sprite = this.assetManager.antSprite;
 
     this.ants = [];
-    this.activeAnts = [];
 
     for (let i = 0; i < this.ANT_COUNT; i++) {
       const ant = new Ant(sprite, this.worldManager);
@@ -38,45 +33,15 @@ export class AntManagerService {
 
   update(timeStamp: DOMHighResTimeStamp): void {
     if (this.previousTimeStamp != null) {
-      this.updateOnly(timeStamp);
-      // this.continuousCreation(timeStamp);
-    }
-    this.previousTimeStamp = timeStamp;
-  }
+      const deltaTime = timeStamp - this.previousTimeStamp;
 
-  updateOnly(timeStamp: DOMHighResTimeStamp): void {
-    const deltaTime = timeStamp - this.previousTimeStamp;
-
-    this.ants.forEach((ant) => {
-      ant.move(deltaTime);
-      ant.dropPheromones(deltaTime);
-    });
-  }
-
-  continuousCreation(timeStamp: DOMHighResTimeStamp): void {
-    const deltaTime = timeStamp - this.previousTimeStamp;
-
-    if (this.activeAnts.length <= this.ANT_COUNT - 2) {
-      for (let i = 0; i < 2; i++) {
-        const ant = this.ants.shift();
-        ant.creationTime = this.simulationSteps;
-        ant.visible = true;
-        this.activeAnts.push(ant);
-      }
-    }
-
-    this.activeAnts.forEach((ant) => {
-      if (this.simulationSteps - ant.creationTime >= this.antLifetime) {
-        ant.init();
-        ant.visible = false;
-        this.ants.push(this.activeAnts.shift());
-      } else {
+      this.ants.forEach((ant) => {
         ant.move(deltaTime);
-        ant.dropPheromones(timeStamp);
-      }
-    });
+        ant.dropPheromones(deltaTime);
+      });
+    }
 
-    this.simulationSteps++;
+    this.previousTimeStamp = timeStamp;
   }
 
   reset(): void {
