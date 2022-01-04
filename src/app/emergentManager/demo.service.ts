@@ -7,8 +7,6 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { DemoCanvasService } from './demo-canvas.service';
-import { AntsComponent } from './emergentAlgorithms/ants/ants.component';
-import { BoidsComponent } from './emergentAlgorithms/boids/boids.component';
 import { DemoComponent } from './emergentAlgorithms/DemoComponent';
 import { FpsCounterService } from './fps-counter.service';
 
@@ -23,16 +21,7 @@ export class DemoService {
   private readonly BOIDS_COMPONENT_NAME = 'boids';
   private readonly ANTS_COMPONENT_NAME = 'ants';
 
-  private componentFactories = new Map<string, ComponentFactory<DemoComponent>>(
-    [
-      [this.BOIDS_COMPONENT_NAME, this.getFactory(BoidsComponent)],
-      [this.ANTS_COMPONENT_NAME, this.getFactory(AntsComponent)],
-    ]
-  );
-
-  getFactory(component: Type<DemoComponent>): ComponentFactory<DemoComponent> {
-    return this.resolver.resolveComponentFactory(component);
-  }
+  private componentFactories;
 
   private initialFactory: string = this.BOIDS_COMPONENT_NAME;
 
@@ -44,23 +33,37 @@ export class DemoService {
     private fpsCounter: FpsCounterService
   ) {}
 
-  init(demoContainer: ViewContainerRef): void {
+  async init(demoContainer: ViewContainerRef): Promise<void> {
     this.demoContainer = demoContainer;
 
     document
       .getElementById('demo-simulation-wrapper')
       .classList.replace('hidden', 'demo-simulation-wrapper');
 
+    const { BoidsComponent } = await import(
+      './emergentAlgorithms/boids/boids.component'
+    );
+    const { AntsComponent } = await import(
+      './emergentAlgorithms/ants/ants.component'
+    );
+    this.componentFactories = new Map<string, ComponentFactory<DemoComponent>>([
+      [this.BOIDS_COMPONENT_NAME, this.getFactory(BoidsComponent)],
+      [this.ANTS_COMPONENT_NAME, this.getFactory(AntsComponent)],
+    ]);
+
     this.activateDemo(this.initialFactory);
+  }
+
+  getFactory(component: Type<DemoComponent>): ComponentFactory<DemoComponent> {
+    return this.resolver.resolveComponentFactory(component);
   }
 
   activateDemo(componentName: string): void {
     if (!this.componentFactories.has(componentName))
       throw new Error(`No ComponentFactory named ${componentName}!`);
 
-    if (this.activeComponent != null) {
-      this.stopDemo();
-    }
+    if (this.activeComponent != null) this.stopDemo();
+
     this.demoContainer.clear();
     this.demoCanvas.removeAllChildrenFromStage();
 
