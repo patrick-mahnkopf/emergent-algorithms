@@ -1,4 +1,4 @@
-import { Vector2D } from './Vector2D';
+import { Vector2D } from './vector-2d';
 
 export class SpriteObject extends PIXI.AnimatedSprite {
   private frame = this.currentFrame;

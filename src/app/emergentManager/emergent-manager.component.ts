@@ -1,13 +1,12 @@
 import {
-  AfterViewInit,
   Component,
+  ComponentRef,
   ElementRef,
   OnDestroy,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { DemoCanvasService } from './demo-canvas.service';
-import { DemoService } from './demo.service';
+import { IDemoComponent } from './demo/demo-component-interface';
 
 @Component({
   selector: 'app-emergent-manager',
@@ -15,24 +14,15 @@ import { DemoService } from './demo.service';
   styleUrls: ['./emergent-manager.component.scss'],
   providers: [],
 })
-export class EmergentManagerComponent implements AfterViewInit, OnDestroy {
+export class EmergentManagerComponent implements OnDestroy {
   @ViewChild('pixi') pixiContainer: ElementRef;
   @ViewChild('demo', { read: ViewContainerRef })
   demoContainer: ViewContainerRef;
   @ViewChild('startButton') startButton: ElementRef;
 
-  constructor(
-    private demoService: DemoService,
-    private demoCanvas: DemoCanvasService
-  ) {}
+  private demo: ComponentRef<IDemoComponent>;
 
-  ngAfterViewInit(): void {
-    this.demoCanvas.init(this.pixiContainer, this);
-  }
-
-  onLoadFinished(): void {
-    this.demoService.init(this.demoContainer);
-  }
+  constructor(private viewContainerRef: ViewContainerRef) {}
 
   onDemoButtonClicked(button: HTMLButtonElement): void {
     const buttonId: string = button.id;
@@ -40,18 +30,23 @@ export class EmergentManagerComponent implements AfterViewInit, OnDestroy {
     if (!buttonId.includes('-button'))
       throw new Error('Malformed Emergent demo button id!');
 
-    const componentName = buttonId.split('-')[0];
+    const componentName: string = buttonId.split('-')[0];
 
-    this.demoService.activateDemo(componentName);
+    this.demo.instance.activateDemo(componentName);
   }
 
-  onStartButtonClicked(): void {
-    this.demoCanvas.loadResources();
+  async onStartButtonClicked(): Promise<void> {
     document.getElementById('start-button-wrapper').style.display = 'none';
+
+    const { DemoComponent } = await import('./demo/demo.component');
+
+    this.demo = this.viewContainerRef.createComponent(DemoComponent);
+
+    this.demo.instance.init(this.pixiContainer, this.demoContainer);
   }
 
   ngOnDestroy(): void {
-    this.demoService.stopDemo();
-    this.demoCanvas.unloadResources();
+    console.log('Manager onDestroy');
+    this.demo.instance.onDestroy();
   }
 }

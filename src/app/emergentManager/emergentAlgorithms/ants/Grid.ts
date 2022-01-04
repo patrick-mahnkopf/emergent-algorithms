@@ -1,6 +1,6 @@
 import { Graphics } from 'pixi.js';
-import { DemoCanvasService } from '../../demo-canvas.service';
-import { Vector2D } from '../Vector2D';
+import { DemoCanvasService } from '../../demo/demo-canvas.service';
+import { Vector2D } from '../vector-2d';
 import { WorldManagerService } from './world-manager.service';
 
 export class Grid {

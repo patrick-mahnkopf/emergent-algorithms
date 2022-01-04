@@ -10,6 +10,7 @@ import { BottomUiService } from './emergentManager/emergentAlgorithms/boids/bott
 import { HeroComponent } from './emergentManager/hero/hero.component';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
+import { DemoComponent } from './emergentManager/demo/demo.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { HeaderComponent } from './header/header.component';
     EmergentManagerComponent,
     BoidsComponent,
     AntsComponent,
+    DemoComponent,
   ],
   imports: [BrowserModule, AppRoutingModule],
   providers: [BoidRulesService, BottomUiService],

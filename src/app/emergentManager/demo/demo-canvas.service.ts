@@ -1,8 +1,8 @@
 import { ElementRef, Injectable } from '@angular/core';
 import screenfull from 'screenfull';
-import { Utilities } from '../Utilities';
-import { EmergentManagerComponent } from './emergent-manager.component';
-import { AssetManager } from './emergentAlgorithms/AssetManager';
+import { Utilities } from 'src/app/Utilities';
+import { AssetManager } from '../emergentAlgorithms/asset-manager';
+import { DemoComponent } from './demo.component';
 
 const Application = PIXI.Application;
 
@@ -10,7 +10,7 @@ const Application = PIXI.Application;
   providedIn: 'root',
 })
 export class DemoCanvasService {
-  private emergentManager: EmergentManagerComponent;
+  private demo: DemoComponent;
 
   app: PIXI.Application;
   private pixiContainer: ElementRef;
@@ -24,16 +24,19 @@ export class DemoCanvasService {
 
   constructor(private assetManager: AssetManager) {}
 
-  init(
-    pixiContainer: ElementRef,
-    emergentManager: EmergentManagerComponent
-  ): void {
+  init(pixiContainer: ElementRef, demo: DemoComponent): void {
     this.pixiContainer = pixiContainer;
-    this.emergentManager = emergentManager;
+    this.demo = demo;
+
+    const backgroundColor = Utilities.convertRgbToHex(
+      window
+        .getComputedStyle(pixiContainer.nativeElement)
+        .getPropertyValue('background-color')
+    );
 
     this.app = new Application({
       antialias: true,
-      backgroundColor: 0x282832,
+      backgroundColor: backgroundColor,
       resolution: window.devicePixelRatio,
       resizeTo: window,
     });
@@ -50,9 +53,7 @@ export class DemoCanvasService {
   }
 
   loadResources(): void {
-    this.assetManager.loadAssets(
-      this.emergentManager.onLoadFinished.bind(this.emergentManager)
-    );
+    this.assetManager.loadAssets(this.demo.onLoadFinished.bind(this.demo));
   }
 
   unloadResources(): void {

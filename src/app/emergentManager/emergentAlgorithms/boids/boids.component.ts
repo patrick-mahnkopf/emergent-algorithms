@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { Utilities } from 'src/app/Utilities';
-import { DemoCanvasService } from './../../demo-canvas.service';
-import { AssetManager } from './../AssetManager';
-import { DemoComponent } from './../DemoComponent';
-import { Bird } from './Bird';
+import { DemoCanvasService } from '../../demo/demo-canvas.service';
+import { AssetManager } from '../asset-manager';
+import { ISimulationComponent } from '../simulation-component-interface';
+import { Bird } from './bird';
 import { BoidRulesService } from './boid-rules.service';
 import { BottomUiService } from './bottom-ui.service';
 
@@ -14,7 +14,7 @@ const loader = PIXI.Loader.shared;
   templateUrl: './boids.component.html',
   styleUrls: ['./boids.component.scss'],
 })
-export class BoidsComponent implements DemoComponent {
+export class BoidsComponent implements ISimulationComponent {
   private readonly BIRD_COUNT: number = 350;
   private birds: Bird[] = [];
 

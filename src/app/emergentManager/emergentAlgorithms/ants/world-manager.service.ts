@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Circle } from '../Circle';
-import { DemoCanvasService } from './../../demo-canvas.service';
-import { Vector2D } from './../Vector2D';
-import { Grid } from './Grid';
+import { DemoCanvasService } from '../../demo/demo-canvas.service';
+import { Circle } from '../circle';
+import { Vector2D } from '../vector-2d';
+import { Grid } from './grid';
 
 @Injectable({
   providedIn: 'root',

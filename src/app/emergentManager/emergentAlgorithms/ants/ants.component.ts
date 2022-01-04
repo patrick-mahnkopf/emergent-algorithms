@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { DemoCanvasService } from '../../demo-canvas.service';
-import { DemoComponent } from '../DemoComponent';
-import { Vector2D } from '../Vector2D';
+import { DemoCanvasService } from '../../demo/demo-canvas.service';
+import { ISimulationComponent } from '../simulation-component-interface';
+import { Vector2D } from '../vector-2d';
 import { AntManagerService } from './ant-manager.service';
-import { PheromoneType } from './Grid';
+import { PheromoneType } from './grid';
 import { WorldManagerService } from './world-manager.service';
 
 const loader = PIXI.Loader.shared;
@@ -13,7 +13,7 @@ const loader = PIXI.Loader.shared;
   templateUrl: './ants.component.html',
   styleUrls: ['./ants.component.scss'],
 })
-export class AntsComponent implements DemoComponent {
+export class AntsComponent implements ISimulationComponent {
   constructor(
     private demoCanvas: DemoCanvasService,
     private worldManager: WorldManagerService,

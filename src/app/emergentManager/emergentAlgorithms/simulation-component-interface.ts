@@ -1,4 +1,4 @@
-export interface DemoComponent {
+export interface ISimulationComponent {
   init(): void;
   unloadResources(): void;
   update(timeStamp: DOMHighResTimeStamp): void;

@@ -1,8 +1,8 @@
 import { DEG_TO_RAD } from 'pixi.js';
 import { Utilities } from 'src/app/Utilities';
-import { SpriteObject } from '../SpriteObject';
-import { Vector2D } from '../Vector2D';
-import { Cell, PheromoneType } from './Grid';
+import { SpriteObject } from '../sprite-object';
+import { Vector2D } from '../vector-2d';
+import { Cell, PheromoneType } from './grid';
 import { WorldManagerService } from './world-manager.service';
 
 export class Ant extends SpriteObject {

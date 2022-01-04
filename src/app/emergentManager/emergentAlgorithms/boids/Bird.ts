@@ -1,7 +1,7 @@
 import { Utilities } from 'src/app/Utilities';
-import { SpriteObject } from '../SpriteObject';
-import { Vector2D } from '../Vector2D';
-import { DemoCanvasService } from './../../demo-canvas.service';
+import { DemoCanvasService } from '../../demo/demo-canvas.service';
+import { SpriteObject } from '../sprite-object';
+import { Vector2D } from '../vector-2d';
 import { BottomUiService } from './bottom-ui.service';
 
 export class Bird extends SpriteObject {

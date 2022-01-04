@@ -6,9 +6,9 @@ import {
   Type,
   ViewContainerRef,
 } from '@angular/core';
+import { FpsCounterService } from '../fps-counter.service';
+import { ISimulationComponent } from './../emergentAlgorithms/simulation-component-interface';
 import { DemoCanvasService } from './demo-canvas.service';
-import { DemoComponent } from './emergentAlgorithms/DemoComponent';
-import { FpsCounterService } from './fps-counter.service';
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +25,7 @@ export class DemoService {
 
   private initialFactory: string = this.BOIDS_COMPONENT_NAME;
 
-  activeComponent: ComponentRef<DemoComponent>;
+  activeComponent: ComponentRef<ISimulationComponent>;
 
   constructor(
     private resolver: ComponentFactoryResolver,
@@ -41,20 +41,22 @@ export class DemoService {
       .classList.replace('hidden', 'demo-simulation-wrapper');
 
     const { BoidsComponent } = await import(
-      './emergentAlgorithms/boids/boids.component'
+      '../emergentAlgorithms/boids/boids.component'
     );
     const { AntsComponent } = await import(
-      './emergentAlgorithms/ants/ants.component'
+      '../emergentAlgorithms/ants/ants.component'
     );
-    this.componentFactories = new Map<string, ComponentFactory<DemoComponent>>([
-      [this.BOIDS_COMPONENT_NAME, this.getFactory(BoidsComponent)],
-      [this.ANTS_COMPONENT_NAME, this.getFactory(AntsComponent)],
+    this.componentFactories = new Map<string, Type<ISimulationComponent>>([
+      [this.BOIDS_COMPONENT_NAME, BoidsComponent],
+      [this.ANTS_COMPONENT_NAME, AntsComponent],
     ]);
 
     this.activateDemo(this.initialFactory);
   }
 
-  getFactory(component: Type<DemoComponent>): ComponentFactory<DemoComponent> {
+  getFactory(
+    component: Type<ISimulationComponent>
+  ): ComponentFactory<ISimulationComponent> {
     return this.resolver.resolveComponentFactory(component);
   }
 
@@ -69,7 +71,8 @@ export class DemoService {
 
     this.demoCanvas.addFpsCounterToStage();
 
-    const demoFactory = this.componentFactories.get(componentName);
+    const demoFactory: Type<ISimulationComponent> =
+      this.componentFactories.get(componentName);
     this.activeComponent = this.demoContainer.createComponent(demoFactory);
 
     this.demoCanvas.app.view.addEventListener('click', (event) =>

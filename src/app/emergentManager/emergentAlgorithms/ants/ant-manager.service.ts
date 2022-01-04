@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { DemoCanvasService } from '../../demo-canvas.service';
-import { AssetManager } from './../AssetManager';
-import { Ant } from './Ant';
+import { DemoCanvasService } from '../../demo/demo-canvas.service';
+import { AssetManager } from '../asset-manager';
+import { Ant } from './ant';
 import { WorldManagerService } from './world-manager.service';
 
 @Injectable({

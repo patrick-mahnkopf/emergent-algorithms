@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Vector2D } from '../Vector2D';
-import { DemoCanvasService } from './../../demo-canvas.service';
-import { Bird } from './Bird';
+import { DemoCanvasService } from '../../demo/demo-canvas.service';
+import { Vector2D } from '../vector-2d';
+import { Bird } from './bird';
 import { BottomUiService } from './bottom-ui.service';
 
 @Injectable({

@@ -1,4 +1,4 @@
-import { Vector2D } from './emergentManager/emergentAlgorithms/Vector2D';
+import { Vector2D } from './emergentManager/emergentAlgorithms/vector-2d';
 export class Utilities {
   static getRandomInt(min: number, max: number): number {
     min = Math.ceil(min);
@@ -36,12 +36,20 @@ export class Utilities {
     return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   }
 
-  static showSnackBar(text: string): void {
-    const snackbar = document.getElementById('snackbar')!;
-    snackbar.textContent = text;
-    snackbar.style.display = 'block';
-    setTimeout(function () {
-      snackbar.style.display = 'none';
-    }, 5000);
+  static convertRgbToHex(rgb: string) {
+    if (!/rgb/i.test(rgb))
+      throw new Error(
+        "Color string has wrong format! The string should have the format: 'rgb(r, g, b)'."
+      );
+
+    const matches = /rgb\((\d.+?), (\d.+?), (\d.+?)\)/gm.exec(rgb).slice(1, 4);
+
+    let colorString = '';
+    for (const match of matches) {
+      const hex = Number.parseInt(match).toString(16);
+      colorString += hex.length == 1 ? '0' + hex : hex;
+    }
+
+    return Number.parseInt('0x' + colorString, 16);
   }
 }
