@@ -40,7 +40,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "baseHref": "https://patrick-mahnkopf.github.io/emergent-algorithms/",
+              "baseHref": "/emergent-algorithms/",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,

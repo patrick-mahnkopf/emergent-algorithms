@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
-export const BOID_SPRITE = '/assets/emergent_demos/boids/boids.json';
-export const ANT_SPRITE = '/assets/emergent_demos/ants/ants.json';
+export const BOID_SPRITE = './assets/emergent_demos/boids/boids.json';
+export const ANT_SPRITE = './assets/emergent_demos/ants/ants.json';
 
 const loader = PIXI.Loader.shared,
   resources = PIXI.Loader.shared.resources;

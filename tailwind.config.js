@@ -53,8 +53,7 @@ module.exports = {
         '144': '36rem'
       },
       backgroundImage: {
-        'hero-pattern': "url('/assets/portfolio/hero/background.webp')",
-        'emergent-pattern': "url('/assets/emergent_demos/hero/background.webp')"
+        'emergent-pattern': "url('./assets/emergent_demos/hero/background.webp')"
       },
       outline: {
         'theme': ['2px solid ' + theme_color, '-2px'],
