@@ -13,6 +13,7 @@ const loader = PIXI.Loader.shared;
   selector: 'app-boids',
   templateUrl: './boids.component.html',
   styleUrls: ['./boids.component.scss'],
+  providers: [BoidRulesService, BottomUiService],
 })
 export class BoidsComponent implements ISimulationComponent {
   private readonly BIRD_COUNT: number = 350;

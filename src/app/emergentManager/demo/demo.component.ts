@@ -32,7 +32,6 @@ export class DemoComponent implements IDemoComponent {
   }
 
   onDestroy(): void {
-    console.log('Demo onDestroy');
     this.demoService.stopDemo();
     this.demoCanvas.unloadResources();
   }

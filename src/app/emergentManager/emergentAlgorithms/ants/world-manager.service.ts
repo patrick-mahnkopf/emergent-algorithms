@@ -83,13 +83,11 @@ export class WorldManagerService {
       case 'decay-slider':
         this.grid.decayRate = this.grid.DEFAULT_DECAY_RATE * 2 * weightModifier;
         if (this.grid.decayRate > 1) this.grid.decayRate = 1;
-        console.log(`Set decay rate to ${this.grid.decayRate}`);
         break;
       case 'diffusion-slider':
         this.grid.diffusionRate =
           this.grid.DEFAULT_DIFFUSION_RATE * 2 * weightModifier;
         if (this.grid.diffusionRate > 1) this.grid.diffusionRate = 1;
-        console.log(`Set diffusion rate to ${this.grid.diffusionRate}`);
         break;
 
       default:

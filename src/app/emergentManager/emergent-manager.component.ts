@@ -46,7 +46,6 @@ export class EmergentManagerComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('Manager onDestroy');
     this.demo.instance.onDestroy();
   }
 }
