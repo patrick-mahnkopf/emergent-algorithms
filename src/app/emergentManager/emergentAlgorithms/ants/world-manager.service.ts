@@ -22,20 +22,16 @@ export class WorldManagerService {
   init(): void {
     this.initGrid();
 
-    const size = Math.min(this.demoCanvas.width, this.demoCanvas.height);
-    const dist = size * 0.2;
-    const radius = size * 0.1;
+    this.initLocations();
 
-    this.initNest(dist, dist, radius);
-    this.initFood(
-      this.demoCanvas.width - dist,
-      this.demoCanvas.height - dist,
-      radius
-    );
+    window.addEventListener('resize', () => {
+      this.onResize();
+    });
   }
 
   initGrid(): void {
     this.grid = new Grid(this.demoCanvas, this);
+    this.grid.init();
     this.grid.addToCanvas();
   }
 
@@ -47,6 +43,26 @@ export class WorldManagerService {
   initFood(x: number, y: number, radius: number): void {
     this.food = new Circle(x, y, radius, 0x0000cc);
     this.demoCanvas.addChildToStage(this.food);
+  }
+
+  onResize(): void {
+    setTimeout(() => this.initLocations(), 10);
+  }
+
+  initLocations(): void {
+    const size = Math.min(this.demoCanvas.width, this.demoCanvas.height);
+    const borderDistance = 0.2 * size;
+    const radius = 0.1 * size;
+
+    this.demoCanvas.removeChildFromStage(this.nest);
+    this.initNest(borderDistance, borderDistance, radius);
+
+    this.demoCanvas.removeChildFromStage(this.food);
+    this.initFood(
+      this.demoCanvas.width - borderDistance,
+      this.demoCanvas.height - borderDistance,
+      radius
+    );
   }
 
   update(timeStamp: DOMHighResTimeStamp): void {
